@@ -1,7 +1,7 @@
 version: '3'
 services:
   smtp:
-    image: namshi/smtp
+    image: theolymp/docker-smtp
     container_name: smtp_relay
     restart: always
     ports:

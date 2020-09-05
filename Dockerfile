@@ -1,6 +1,13 @@
 FROM debian:buster
 
-MAINTAINER Oluwaseun Obajobi "oluwaseun.obajobi@namshi.com"
+LABEL name="theolymp/docker-smtp" \
+      maintainer="robin.parker@theolymp.net" \
+      vendor="Namshi / the olymp" \
+      version="1.0" \
+      release="1" \
+      summary="Exim4 Mailproxy via ENV (for OpenShift)" \
+      description="Mailrelay/proxy via enviroment variables" \
+      io.openshift.tags="sidecar,smtp,mail"
 
 RUN apt-get update && \
     apt-get install -y exim4-daemon-light && \
@@ -10,10 +17,12 @@ RUN apt-get update && \
 
 COPY entrypoint.sh /bin/
 COPY set-exim4-update-conf /bin/
+COPY uid_entrypoint /bin/
 
-RUN chmod a+x /bin/entrypoint.sh && \
-    chmod a+x /bin/set-exim4-update-conf
+RUN chmod -R u+x /etc/passwd /bin/ /var/lib/exim4/ && \
+    chgrp -R 0 /etc/passwd /bin/ /etc/exim4 /etc/passwd  /var/lib/exim4/ && \
+    chmod -R g=u /etc/passwd /bin/ /etc/exim4 /etc/passwd /var/lib/exim4/
 
 EXPOSE 25
-ENTRYPOINT ["/bin/entrypoint.sh"]
-CMD ["exim", "-bd", "-q15m", "-v"]
+ENTRYPOINT [ "/bin/uid_entrypoint" ]
+CMD ["/bin/entrypoint.sh", "exim", "-bd", "-q15m", "-v"]
