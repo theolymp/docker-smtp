@@ -19,9 +19,9 @@ COPY entrypoint.sh /bin/
 COPY set-exim4-update-conf /bin/
 COPY uid_entrypoint /bin/
 
-RUN chmod -R u+x /etc/passwd /bin/ /var/lib/exim4/ && \
+RUN chmod -cfR u+x /etc/passwd /bin/ /var/lib/exim4/ && \
     chgrp -R 0 /etc/passwd /bin/ /etc/exim4 /etc/passwd  /var/lib/exim4/ && \
-    chmod -R g=u /etc/passwd /bin/ /etc/exim4 /etc/passwd /var/lib/exim4/
+    chmod -cfR g=u /etc/passwd /bin/ /etc/exim4 /etc/passwd /var/lib/exim4/
 
 EXPOSE 25
 ENTRYPOINT [ "/bin/uid_entrypoint" ]
