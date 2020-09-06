@@ -9,6 +9,8 @@ LABEL name="theolymp/docker-smtp" \
       description="Mailrelay/proxy via enviroment variables" \
       io.openshift.tags="sidecar,smtp,mail"
 
+USER root
+
 RUN apt-get update && \
     apt-get install -y exim4-daemon-light && \
     apt-get clean && \
@@ -22,6 +24,9 @@ COPY uid_entrypoint /bin/
 RUN chmod -cfR u+x /etc/passwd /bin/ /var/lib/exim4/ && \
     chgrp -R 0 /etc/passwd /bin/ /etc/exim4 /etc/passwd  /var/lib/exim4/ && \
     chmod -cfR g=u /etc/passwd /bin/ /etc/exim4 /etc/passwd /var/lib/exim4/
+
+USER 1001
+
 
 EXPOSE 25
 ENTRYPOINT [ "/bin/uid_entrypoint" ]
